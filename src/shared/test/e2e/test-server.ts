@@ -13,9 +13,11 @@ import { RedisService, REDIS_SERVICE_TOKEN } from '@infrastructure/redis/index.j
 import {
   authTypeDefs,
   teamTypeDefs,
+  projectTypeDefs,
   scalarResolvers,
   authResolvers,
   teamResolvers,
+  projectResolvers,
   type GraphQLContext,
 } from '@presentation/graphql/index.js';
 
@@ -54,16 +56,18 @@ export async function createTestServer(): Promise<TestServer> {
 
   // Create GraphQL schema
   const schema = makeExecutableSchema({
-    typeDefs: [authTypeDefs, teamTypeDefs],
+    typeDefs: [authTypeDefs, teamTypeDefs, projectTypeDefs],
     resolvers: {
       ...scalarResolvers,
       Query: {
         ...authResolvers.Query,
         ...teamResolvers.Query,
+        ...projectResolvers.Query,
       },
       Mutation: {
         ...authResolvers.Mutation,
         ...teamResolvers.Mutation,
+        ...projectResolvers.Mutation,
       },
     },
   });
@@ -153,7 +157,8 @@ export async function cleanupTestData(): Promise<void> {
   const client = database.getClient();
 
   // Delete in correct order to avoid foreign key constraint violations
-  // Order: invitations -> memberships -> teams -> users
+  // Order: projects -> invitations -> memberships -> teams -> users
+  await client.project.deleteMany({});
   await client.teamInvitation.deleteMany({});
   await client.teamMembership.deleteMany({});
   await client.team.deleteMany({});

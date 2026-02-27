@@ -461,3 +461,199 @@ export interface CancelInvitationResponse {
     success: boolean;
   };
 }
+
+// ============================================
+// Project GraphQL Operations
+// ============================================
+
+// Queries
+export const PROJECT_QUERY = `
+  query Project($id: ID!) {
+    project(id: $id) {
+      project {
+        id
+        teamId
+        name
+        description
+        status
+        position
+        createdBy
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
+
+export const TEAM_PROJECTS_QUERY = `
+  query TeamProjects($teamId: ID!, $includeArchived: Boolean) {
+    teamProjects(teamId: $teamId, includeArchived: $includeArchived) {
+      projects {
+        id
+        teamId
+        name
+        description
+        status
+        position
+        createdBy
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
+
+// Mutations
+export const CREATE_PROJECT_MUTATION = `
+  mutation CreateProject($teamId: ID!, $input: CreateProjectInput!) {
+    createProject(teamId: $teamId, input: $input) {
+      project {
+        id
+        teamId
+        name
+        description
+        status
+        position
+        createdBy
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
+
+export const UPDATE_PROJECT_MUTATION = `
+  mutation UpdateProject($projectId: ID!, $input: UpdateProjectInput!) {
+    updateProject(projectId: $projectId, input: $input) {
+      project {
+        id
+        teamId
+        name
+        description
+        status
+        position
+        createdBy
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
+
+export const ARCHIVE_PROJECT_MUTATION = `
+  mutation ArchiveProject($projectId: ID!) {
+    archiveProject(projectId: $projectId) {
+      project {
+        id
+        teamId
+        name
+        description
+        status
+        position
+        createdBy
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
+
+export const RESTORE_PROJECT_MUTATION = `
+  mutation RestoreProject($projectId: ID!) {
+    restoreProject(projectId: $projectId) {
+      project {
+        id
+        teamId
+        name
+        description
+        status
+        position
+        createdBy
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
+
+export const DELETE_PROJECT_MUTATION = `
+  mutation DeleteProject($projectId: ID!) {
+    deleteProject(projectId: $projectId) {
+      success
+    }
+  }
+`;
+
+export const REORDER_PROJECTS_MUTATION = `
+  mutation ReorderProjects($teamId: ID!, $input: ReorderProjectsInput!) {
+    reorderProjects(teamId: $teamId, input: $input) {
+      success
+    }
+  }
+`;
+
+// ============================================
+// Project Response Types
+// ============================================
+
+export interface ProjectData {
+  id: string;
+  teamId: string;
+  name: string;
+  description: string | null;
+  status: 'active' | 'archived';
+  position: number;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Query Responses
+export interface GetProjectResponse {
+  project: {
+    project: ProjectData;
+  } | null;
+}
+
+export interface GetTeamProjectsResponse {
+  teamProjects: {
+    projects: ProjectData[];
+  };
+}
+
+// Mutation Responses
+export interface CreateProjectResponse {
+  createProject: {
+    project: ProjectData;
+  };
+}
+
+export interface UpdateProjectResponse {
+  updateProject: {
+    project: ProjectData;
+  };
+}
+
+export interface ArchiveProjectResponse {
+  archiveProject: {
+    project: ProjectData;
+  };
+}
+
+export interface RestoreProjectResponse {
+  restoreProject: {
+    project: ProjectData;
+  };
+}
+
+export interface DeleteProjectResponse {
+  deleteProject: {
+    success: boolean;
+  };
+}
+
+export interface ReorderProjectsResponse {
+  reorderProjects: {
+    success: boolean;
+  };
+}

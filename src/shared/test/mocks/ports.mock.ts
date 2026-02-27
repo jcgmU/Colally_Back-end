@@ -11,6 +11,7 @@ import type { ITokenService } from '@domain/auth/ports/token-service.port.js';
 import type { IRefreshTokenStorage } from '@domain/auth/ports/refresh-token-storage.port.js';
 import type { ITeamRepository } from '@domain/team/ports/team-repository.port.js';
 import type { ITeamInvitationRepository } from '@domain/team/ports/team-invitation-repository.port.js';
+import type { IProjectRepository } from '@domain/project/ports/project-repository.port.js';
 
 // ============================================
 // Auth Mocks
@@ -27,6 +28,11 @@ export const mockTeamRepository = mockDeep<ITeamRepository>();
 export const mockTeamInvitationRepository = mockDeep<ITeamInvitationRepository>();
 
 // ============================================
+// Project Mocks
+// ============================================
+export const mockProjectRepository = mockDeep<IProjectRepository>();
+
+// ============================================
 // Export types for use in tests
 // ============================================
 export type MockUserRepository = DeepMockProxy<IUserRepository>;
@@ -35,6 +41,7 @@ export type MockTokenService = DeepMockProxy<ITokenService>;
 export type MockRefreshTokenStorage = DeepMockProxy<IRefreshTokenStorage>;
 export type MockTeamRepository = DeepMockProxy<ITeamRepository>;
 export type MockTeamInvitationRepository = DeepMockProxy<ITeamInvitationRepository>;
+export type MockProjectRepository = DeepMockProxy<IProjectRepository>;
 
 /**
  * Reset all mocks before each test
@@ -47,6 +54,7 @@ export function resetAllMocks(): void {
   mockReset(mockRefreshTokenStorage);
   mockReset(mockTeamRepository);
   mockReset(mockTeamInvitationRepository);
+  mockReset(mockProjectRepository);
 }
 
 /**

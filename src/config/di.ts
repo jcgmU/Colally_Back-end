@@ -19,12 +19,14 @@ import {
 } from '@domain/auth/ports/index.js';
 import { TEAM_REPOSITORY_TOKEN } from '@domain/team/ports/team-repository.port.js';
 import { TEAM_INVITATION_REPOSITORY_TOKEN } from '@domain/team/ports/team-invitation-repository.port.js';
+import { PROJECT_REPOSITORY_TOKEN } from '@domain/project/ports/index.js';
 
 // Adapters
 import {
   PrismaUserRepository,
   PrismaTeamRepository,
   PrismaTeamInvitationRepository,
+  PrismaProjectRepository,
 } from '@adapters/repositories/index.js';
 
 /**
@@ -45,6 +47,7 @@ export function configureDI(): void {
   container.registerSingleton(USER_REPOSITORY_TOKEN, PrismaUserRepository);
   container.registerSingleton(TEAM_REPOSITORY_TOKEN, PrismaTeamRepository);
   container.registerSingleton(TEAM_INVITATION_REPOSITORY_TOKEN, PrismaTeamInvitationRepository);
+  container.registerSingleton(PROJECT_REPOSITORY_TOKEN, PrismaProjectRepository);
 }
 
 /**

@@ -8,9 +8,11 @@ import { TOKEN_SERVICE_TOKEN, type ITokenService } from '@domain/auth/ports/inde
 import {
   authTypeDefs,
   teamTypeDefs,
+  projectTypeDefs,
   scalarResolvers,
   authResolvers,
   teamResolvers,
+  projectResolvers,
   type GraphQLContext,
 } from '@presentation/graphql/index.js';
 
@@ -25,16 +27,18 @@ export async function createApolloServer(): Promise<{
 
   // Create GraphQL schema
   const schema = makeExecutableSchema({
-    typeDefs: [authTypeDefs, teamTypeDefs],
+    typeDefs: [authTypeDefs, teamTypeDefs, projectTypeDefs],
     resolvers: {
       ...scalarResolvers,
       Query: {
         ...authResolvers.Query,
         ...teamResolvers.Query,
+        ...projectResolvers.Query,
       },
       Mutation: {
         ...authResolvers.Mutation,
         ...teamResolvers.Mutation,
+        ...projectResolvers.Mutation,
       },
     },
   });

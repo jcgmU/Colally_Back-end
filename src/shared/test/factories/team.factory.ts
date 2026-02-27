@@ -156,8 +156,9 @@ function generateTestToken(): string {
   return token;
 }
 
-// Default test token (64 hex chars)
+// Default test token (64 hex chars) - used by generateTestToken as fallback
 const DEFAULT_TEST_TOKEN = 'a'.repeat(64);
+void DEFAULT_TEST_TOKEN; // Suppress unused variable warning
 
 /**
  * Create a test TeamInvitation entity with optional overrides

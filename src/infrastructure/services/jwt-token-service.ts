@@ -1,3 +1,5 @@
+import { randomUUID } from 'node:crypto';
+
 import jwt from 'jsonwebtoken';
 import { injectable } from 'tsyringe';
 
@@ -42,6 +44,7 @@ export class JwtTokenService implements ITokenService {
         userId: userId.value,
         email,
         type: 'refresh' as const,
+        jti: randomUUID(), // Unique ID for token rotation
       },
       env.JWT_SECRET,
       {

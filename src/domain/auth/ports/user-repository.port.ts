@@ -1,5 +1,15 @@
+import { AvatarUrl } from '@domain/team/value-objects/index.js';
+
 import { User } from '../entities/user.js';
 import { Email, UserId } from '../value-objects/index.js';
+
+/**
+ * Profile update data
+ */
+export interface UpdateProfileData {
+  name?: string;
+  avatarUrl?: AvatarUrl | null;
+}
 
 /**
  * User Repository Port
@@ -25,6 +35,11 @@ export interface IUserRepository {
    * Save a new user or update an existing one
    */
   save(user: User): Promise<void>;
+
+  /**
+   * Update user profile (name and/or avatar)
+   */
+  updateProfile(id: UserId, data: UpdateProfileData): Promise<User>;
 
   /**
    * Delete a user by their ID

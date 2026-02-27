@@ -87,6 +87,7 @@ export class LoginUserUseCase {
       id: user.id.value,
       email: user.email.value,
       name: user.name,
+      avatarUrl: user.avatarUrl?.value ?? null,
       isActive: user.isActive,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,

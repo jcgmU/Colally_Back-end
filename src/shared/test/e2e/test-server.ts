@@ -12,8 +12,10 @@ import { DatabaseService, DATABASE_SERVICE_TOKEN } from '@infrastructure/databas
 import { RedisService, REDIS_SERVICE_TOKEN } from '@infrastructure/redis/index.js';
 import {
   authTypeDefs,
+  teamTypeDefs,
   scalarResolvers,
   authResolvers,
+  teamResolvers,
   type GraphQLContext,
 } from '@presentation/graphql/index.js';
 
@@ -52,10 +54,17 @@ export async function createTestServer(): Promise<TestServer> {
 
   // Create GraphQL schema
   const schema = makeExecutableSchema({
-    typeDefs: authTypeDefs,
+    typeDefs: [authTypeDefs, teamTypeDefs],
     resolvers: {
       ...scalarResolvers,
-      ...authResolvers,
+      Query: {
+        ...authResolvers.Query,
+        ...teamResolvers.Query,
+      },
+      Mutation: {
+        ...authResolvers.Mutation,
+        ...teamResolvers.Mutation,
+      },
     },
   });
 
@@ -143,6 +152,10 @@ export async function cleanupTestData(): Promise<void> {
   const database = container.resolve<DatabaseService>(DATABASE_SERVICE_TOKEN);
   const client = database.getClient();
 
-  // Delete all users (cascade will handle related data)
+  // Delete in correct order to avoid foreign key constraint violations
+  // Order: invitations -> memberships -> teams -> users
+  await client.teamInvitation.deleteMany({});
+  await client.teamMembership.deleteMany({});
+  await client.team.deleteMany({});
   await client.user.deleteMany({});
 }

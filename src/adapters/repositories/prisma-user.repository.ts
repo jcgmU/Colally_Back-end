@@ -2,8 +2,9 @@ import type { User as PrismaUser } from '@prisma/client';
 import { inject, injectable } from 'tsyringe';
 
 import { User } from '@domain/auth/entities/index.js';
-import type { IUserRepository } from '@domain/auth/ports/user-repository.port.js';
+import type { IUserRepository, UpdateProfileData } from '@domain/auth/ports/user-repository.port.js';
 import { Email, HashedPassword, UserId } from '@domain/auth/value-objects/index.js';
+import { AvatarUrl } from '@domain/team/value-objects/index.js';
 import { DatabaseService, DATABASE_SERVICE_TOKEN } from '@infrastructure/database/index.js';
 
 /**
@@ -58,12 +59,34 @@ export class PrismaUserRepository implements IUserRepository {
         email: data.email,
         password: data.password,
         name: data.name,
+        avatarUrl: data.avatarUrl,
         isActive: data.isActive,
         updatedAt: data.updatedAt,
         passwordResetToken: data.passwordResetToken,
         passwordResetExpires: data.passwordResetExpires,
       },
     });
+  }
+
+  public async updateProfile(id: UserId, data: UpdateProfileData): Promise<User> {
+    const updateData: { name?: string; avatarUrl?: string | null; updatedAt: Date } = {
+      updatedAt: new Date(),
+    };
+
+    if (data.name !== undefined) {
+      updateData.name = data.name.trim();
+    }
+
+    if (data.avatarUrl !== undefined) {
+      updateData.avatarUrl = data.avatarUrl?.value ?? null;
+    }
+
+    const prismaUser = await this.database.getClient().user.update({
+      where: { id: id.value },
+      data: updateData,
+    });
+
+    return this.toDomainEntity(prismaUser);
   }
 
   public async delete(id: UserId): Promise<void> {
@@ -95,6 +118,7 @@ export class PrismaUserRepository implements IUserRepository {
       email: Email.create(prismaUser.email),
       password: HashedPassword.fromHash(prismaUser.password),
       name: prismaUser.name,
+      avatarUrl: AvatarUrl.create(prismaUser.avatarUrl),
       isActive: prismaUser.isActive,
       createdAt: prismaUser.createdAt,
       updatedAt: prismaUser.updatedAt,

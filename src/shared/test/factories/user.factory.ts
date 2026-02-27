@@ -3,12 +3,14 @@
  */
 import { User, type UserProps } from '@domain/auth/entities/user.js';
 import { Email, HashedPassword, UserId } from '@domain/auth/value-objects/index.js';
+import { AvatarUrl } from '@domain/team/value-objects/index.js';
 
 export interface CreateTestUserOptions {
   id?: string;
   email?: string;
   password?: string;
   name?: string;
+  avatarUrl?: string | null;
   isActive?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
@@ -29,6 +31,7 @@ export function createTestUser(options: CreateTestUserOptions = {}): User {
       options.password ?? '$2b$12$hashedpasswordvalue123456789012345678901234567890'
     ),
     name: options.name ?? 'Test User',
+    avatarUrl: AvatarUrl.create(options.avatarUrl ?? null),
     isActive: options.isActive ?? true,
     createdAt: options.createdAt ?? now,
     updatedAt: options.updatedAt ?? now,

@@ -3,10 +3,12 @@ export {
   LoginUserInputSchema,
   RefreshTokenInputSchema,
   LogoutInputSchema,
+  UpdateProfileInputSchema,
   type RegisterUserInput,
   type LoginUserInput,
   type RefreshTokenInput,
   type LogoutInput,
+  type UpdateProfileInput,
   type AuthTokensOutput,
   type UserOutput,
   type RegisterUserOutput,
@@ -14,4 +16,5 @@ export {
   type RefreshTokenOutput,
   type LogoutOutput,
   type GetCurrentUserOutput,
+  type UpdateProfileOutput,
 } from './auth.dto.js';

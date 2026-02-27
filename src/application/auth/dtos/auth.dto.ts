@@ -38,6 +38,25 @@ export const LogoutInputSchema = z.object({
 
 export type LogoutInput = z.infer<typeof LogoutInputSchema>;
 
+export const UpdateProfileInputSchema = z.object({
+  name: z
+    .string()
+    .min(1, 'Name cannot be empty')
+    .max(100, 'Name must be 100 characters or less')
+    .optional(),
+  avatarUrl: z
+    .string()
+    .url('Avatar URL must be a valid URL')
+    .max(500, 'Avatar URL must be 500 characters or less')
+    .refine((url) => url.startsWith('https://'), {
+      message: 'Avatar URL must use HTTPS',
+    })
+    .nullable()
+    .optional(),
+});
+
+export type UpdateProfileInput = z.infer<typeof UpdateProfileInputSchema>;
+
 // ============================================
 // Output DTOs
 // ============================================
@@ -51,6 +70,7 @@ export interface UserOutput {
   id: string;
   email: string;
   name: string;
+  avatarUrl: string | null;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -75,5 +95,9 @@ export interface LogoutOutput {
 }
 
 export interface GetCurrentUserOutput {
+  user: UserOutput;
+}
+
+export interface UpdateProfileOutput {
   user: UserOutput;
 }

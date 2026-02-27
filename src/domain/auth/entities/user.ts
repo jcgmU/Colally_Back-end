@@ -1,3 +1,5 @@
+import { AvatarUrl } from '@domain/team/value-objects/index.js';
+
 import { Email, HashedPassword, UserId } from '../value-objects/index.js';
 
 export interface UserProps {
@@ -5,6 +7,7 @@ export interface UserProps {
   email: Email;
   password: HashedPassword;
   name: string;
+  avatarUrl: AvatarUrl | null;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -40,6 +43,7 @@ export class User {
       email: props.email,
       password: props.password,
       name: props.name.trim(),
+      avatarUrl: null,
       isActive: true,
       createdAt: now,
       updatedAt: now,
@@ -74,6 +78,10 @@ export class User {
     return this.props.isActive;
   }
 
+  public get avatarUrl(): AvatarUrl | null {
+    return this.props.avatarUrl;
+  }
+
   public get createdAt(): Date {
     return this.props.createdAt;
   }
@@ -99,6 +107,21 @@ export class User {
 
   public updateName(newName: string): void {
     this.props.name = newName.trim();
+    this.props.updatedAt = new Date();
+  }
+
+  public updateAvatarUrl(avatarUrl: AvatarUrl | null): void {
+    this.props.avatarUrl = avatarUrl;
+    this.props.updatedAt = new Date();
+  }
+
+  public updateProfile(name?: string, avatarUrl?: AvatarUrl | null): void {
+    if (name !== undefined) {
+      this.props.name = name.trim();
+    }
+    if (avatarUrl !== undefined) {
+      this.props.avatarUrl = avatarUrl;
+    }
     this.props.updatedAt = new Date();
   }
 
@@ -147,6 +170,7 @@ export class User {
     email: string;
     password: string;
     name: string;
+    avatarUrl: string | null;
     isActive: boolean;
     createdAt: Date;
     updatedAt: Date;
@@ -158,6 +182,7 @@ export class User {
       email: this.props.email.value,
       password: this.props.password.value,
       name: this.props.name,
+      avatarUrl: this.props.avatarUrl?.value ?? null,
       isActive: this.props.isActive,
       createdAt: this.props.createdAt,
       updatedAt: this.props.updatedAt,

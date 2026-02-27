@@ -1,5 +1,5 @@
 // ColAlly Prisma Schema
-// Authentication Foundation
+// Authentication + Teams Foundation
 
 generator client {
   provider = "prisma-client-js"
@@ -18,6 +18,7 @@ model User {
   email     String   @unique @db.VarChar(255)
   password  String   @db.VarChar(255)
   name      String   @db.VarChar(100)
+  avatarUrl String?  @map("avatar_url") @db.VarChar(500)
   isActive  Boolean  @default(true) @map("is_active")
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
@@ -26,6 +27,70 @@ model User {
   passwordResetToken   String?   @map("password_reset_token") @db.VarChar(255)
   passwordResetExpires DateTime? @map("password_reset_expires") @db.Timestamptz
 
+  // Relations
+  memberships     TeamMembership[]
+  sentInvitations TeamInvitation[] @relation("InvitedBy")
+
   @@index([email])
   @@map("users")
+}
+
+// ============================================
+// Team Model
+// ============================================
+model Team {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @db.VarChar(100)
+  description String?  @db.Text
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  memberships TeamMembership[]
+  invitations TeamInvitation[]
+
+  @@map("teams")
+}
+
+// ============================================
+// Team Membership Model
+// ============================================
+model TeamMembership {
+  id       String   @id @default(uuid()) @db.Uuid
+  userId   String   @map("user_id") @db.Uuid
+  teamId   String   @map("team_id") @db.Uuid
+  role     String   @db.VarChar(20) // owner, admin, member
+  joinedAt DateTime @default(now()) @map("joined_at") @db.Timestamptz
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, teamId])
+  @@index([teamId])
+  @@map("team_memberships")
+}
+
+// ============================================
+// Team Invitation Model
+// ============================================
+model TeamInvitation {
+  id        String   @id @default(uuid()) @db.Uuid
+  teamId    String   @map("team_id") @db.Uuid
+  email     String   @db.VarChar(255)
+  role      String   @db.VarChar(20) // admin, member (owner cannot be invited)
+  token     String   @unique @db.VarChar(64)
+  invitedBy String   @map("invited_by") @db.Uuid
+  expiresAt DateTime @map("expires_at") @db.Timestamptz
+  status    String   @default("pending") @db.VarChar(20) // pending, accepted, rejected, expired
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  // Relations
+  team    Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  inviter User @relation("InvitedBy", fields: [invitedBy], references: [id])
+
+  @@index([email])
+  @@index([token])
+  @@index([teamId])
+  @@map("team_invitations")
 }

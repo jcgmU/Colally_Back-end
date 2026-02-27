@@ -1,0 +1,33 @@
+# openspec/config.yaml
+schema: spec-driven
+
+context: |
+  Tech stack: Node.js + TypeScript + GraphQL (Apollo Server v5) + Prisma (PostgreSQL) + Redis
+  Architecture: Clean Architecture (domain, application, infrastructure, adapters, presentation)
+  DI: tsyringe (dependency injection)
+  Testing: Vitest 3.2.4 + vitest-mock-extended
+  Validation: Zod
+  Auth: JWT (HS256) with refresh token rotation
+
+rules:
+  proposal:
+    - Include rollback plan for risky changes
+    - Identify affected modules/packages
+  specs:
+    - Use Given/When/Then format for scenarios
+    - Use RFC 2119 keywords (MUST, SHALL, SHOULD, MAY)
+  design:
+    - Include sequence diagrams for complex flows
+    - Document architecture decisions with rationale
+  tasks:
+    - Group tasks by phase (infrastructure, implementation, testing)
+    - Use hierarchical numbering (1.1, 1.2, etc.)
+    - Keep tasks small enough to complete in one session
+  apply:
+    - Follow existing code patterns and conventions
+    - Follow Clean Architecture: domain -> application -> infrastructure/adapters -> presentation
+  verify:
+    - Run tests if test infrastructure exists
+    - Compare implementation against every spec scenario
+  archive:
+    - Warn before merging destructive deltas (large removals)
